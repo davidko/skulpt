@@ -293,7 +293,11 @@ var $builtinmodule = function (name) {
             var robot_promise = daemon.getRobot(serial_id);
             var susp = new Sk.misceval.Suspension();
             susp.resume = function() {
-                return Sk.builtin.none.none$;
+                if ( susp.data['error'] ) {
+                    throw new Sk.builtin.RuntimeError('Could not connect to robot: ' + serial_id);
+                } else {
+                    return Sk.builtin.none.none$;
+                }
             };
             susp.data = {
                 type: "Sk.promise",
