@@ -3,7 +3,7 @@ var $builtinmodule = function (name) {
 
     var mod = {};
 
-    function _Linkbot() {
+    function __Linkbot() {
     }
 
     (function(proto) {
@@ -11,6 +11,10 @@ var $builtinmodule = function (name) {
 
         proto.$get_accelerometer = function() {
             return this.inner.getAccelerometer();
+        };
+
+        proto.$get_buttons = function() {
+            return this.inner.getButtons();
         };
 
         proto.$get_joint_angle = function(joint) {
@@ -125,7 +129,16 @@ var $builtinmodule = function (name) {
             return this.inner.setMotorPowers(power1, power2, power3);
         };
 
-    })(_Linkbot.prototype);
+        // Callbacks
+
+        proto.$set_button_callback = function(callback) {
+            return this.inner.setButtonHandler( function(timestamp, buttonNo, buttonState) {
+                //Sk.ffi.callback(callback, timestamp, buttonNo, buttonState);
+                callback(timestamp, buttonNo, buttonState);
+            });
+        };
+
+    })(__Linkbot.prototype);
 
     // InstantPromise is a workaround to allow usage of the clean promise-style
     // then/catch syntax but to instantly call resolve the then/catch chain so we
@@ -170,6 +183,22 @@ var $builtinmodule = function (name) {
 
         return this.lastResult instanceof Promise ? this.lastResult : this;
     };
+
+    function pythonToJavascriptFunction(pyValue, scope) {
+        return function() {
+            var argsJs = Array.prototype.slice.call(arguments),
+                argsPy = argsJs.map(
+                    function(argJs) {return Sk.ffi.remapToPy(argJs);}
+                );
+
+            if (typeof(scope) !== "undefined") {
+                argsPy.unshift(scope);
+            }
+            return Sk.misceval.applyAsync(
+                undefined, pyValue, undefined, undefined, undefined, argsPy
+            ).catch(Sk.uncaughtException);
+        };
+    }
 
     function addModuleMethod(klass, module, method, scopeGenerator) {
         var publicMethodName = method.replace(/^\$/, ""),
@@ -287,7 +316,7 @@ var $builtinmodule = function (name) {
 
     function LinkbotWrapper($gbl, $loc) {
         $loc.__init__ = new Sk.builtin.func(function (self, serial_id) {
-            self.instance = new _Linkbot();
+            self.instance = new __Linkbot();
             Sk.builtin.pyCheckArgs("__init__", arguments, 2, 2);
             serial_id = Sk.ffi.remapToJs(serial_id);
             var robot_promise = daemon.getRobot(serial_id);
@@ -309,14 +338,14 @@ var $builtinmodule = function (name) {
             return susp;
         });
 
-        for(var key in _Linkbot.prototype) {
+        for(var key in __Linkbot.prototype) {
             if (/^\$[a-z_]+/.test(key)) {
-                addModuleMethod(_Linkbot, $loc, key);
+                addModuleMethod(__Linkbot, $loc, key);
             }
         }
     };
 
-    mod.Linkbot = Sk.misceval.buildClass(mod, LinkbotWrapper, "Linkbot", []);
+    mod._Linkbot = Sk.misceval.buildClass(mod, LinkbotWrapper, "_Linkbot", []);
 
     return mod;
 };
