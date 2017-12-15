@@ -22,3 +22,4 @@ class Accelerometer:
 class Linkbot(_linkbot._Linkbot):
     def __init__(self, serial_id):
         _linkbot._Linkbot.__init__(self, serial_id)  
+

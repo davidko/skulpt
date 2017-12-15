@@ -133,8 +133,13 @@ var $builtinmodule = function (name) {
 
         proto.$set_button_callback = function(callback) {
             return this.inner.setButtonHandler( function(timestamp, buttonNo, buttonState) {
-                //Sk.ffi.callback(callback, timestamp, buttonNo, buttonState);
                 callback(timestamp, buttonNo, buttonState);
+            });
+        };
+
+        proto.$set_encoder_callback = function(callback, granularity) {
+            return this.inner.setEncoderHandler( function(jointNo, angle, timestamp) {
+                callback(timestamp, jointNo, angle*180.0/3.14159);
             });
         };
 
