@@ -71,6 +71,10 @@ var $builtinmodule = function (name) {
             return this.inner.moveJointToNB(joint, angle);
         };
 
+        proto.$move_joint_wait = function(joint) {
+            return this.inner.moveWait(1<<joint);
+        };
+
         proto.$reset = function() {
             return this.inner.reset();
         };
@@ -130,17 +134,35 @@ var $builtinmodule = function (name) {
         };
 
         // Callbacks
+        
+        proto.$set_accelerometer_callback = function(callback) {
+            if ( callback ) {
+                return this.inner.setAccelerometerHandler( function( timestamp, x, y, z ) {
+                    callback(timestamp, x, y, z);
+                });
+            } else {
+                return this.inner.setAccelerometerHandler();
+            }
+        };
 
         proto.$set_button_callback = function(callback) {
-            return this.inner.setButtonHandler( function(timestamp, buttonNo, buttonState) {
-                callback(timestamp, buttonNo, buttonState);
-            });
+            if ( callback ) {
+                return this.inner.setButtonHandler( function(timestamp, buttonNo, buttonState) {
+                    callback(timestamp, buttonNo, buttonState);
+                });
+            } else {
+                return this.inner.setButtonHandler();
+            }
         };
 
         proto.$set_encoder_callback = function(callback, granularity) {
-            return this.inner.setEncoderHandler( function(jointNo, angle, timestamp) {
-                callback(timestamp, jointNo, angle*180.0/3.14159);
-            });
+            if ( callback ) {
+                return this.inner.setEncoderHandler( function(jointNo, angle, timestamp) {
+                    callback(timestamp, jointNo, angle*180.0/3.14159);
+                });
+            } else {
+                return this.inner.setEncoderHandler();
+            }
         };
 
     })(__Linkbot.prototype);
