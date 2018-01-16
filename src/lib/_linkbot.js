@@ -272,9 +272,6 @@ var $builtinmodule = function (name) {
             }
 
             try {
-                console.log("Trying to apply function...");
-                console.log(instance);
-                console.log(method);
                 result = instance[method].apply(instance, args);
             } catch(e) {
                 if (window && window.console) {
@@ -288,7 +285,10 @@ var $builtinmodule = function (name) {
                 result = result.lastResult;
             }
 
-            if (result instanceof Promise) {
+            if (
+                    (result instanceof Promise) ||
+                    result.isPromise
+               ) {
                 result = result.catch(function(e) {
                     if (window && window.console) {
                         window.console.log("promise failed");
