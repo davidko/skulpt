@@ -117,6 +117,10 @@ var $builtinmodule = function (name) {
             return this.inner.setMotorSpeeds(speed1, speed2, speed3);
         };
 
+        proto.$set_joint_states = function(s1, s2, s3, mask) {
+            return this.inner.setJointStates(s1, s2, s3, mask);
+        };
+
         proto.$set_led_color = function(r, g, b) {
             return this.inner.setLedColor(r, g, b);
         };
