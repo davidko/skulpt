@@ -144,7 +144,18 @@ class Motors:
         raise NotImplementedError("Method not implemented.")
 
     def move(self, angles, mask=0x07, relative=True, timeouts=None, states_on_timeout=None, wait=True):
-        raise NotImplementedError("Method not implemented.")
+        if timeouts is None:
+            timeouts = [None, None, None]
+        if states_on_timeout is None:
+            states_on_timeout = [None, None, None]
+        wait_mask = 0x00
+        if wait:
+            wait_mask = 0x07
+        return self.__linkbot._move_generic( angles[0], angles[1], angles[2],
+                                             relative, relative, relative,
+                                             timeouts[0], timeouts[1], timeouts[2],
+                                             states_on_timeout[0], states_on_timeout[1], states_on_timeout[2],
+                                             mask, wait_mask)
 
     def reset(self):
         return self.__linkbot.reset()

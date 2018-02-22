@@ -38,6 +38,20 @@ var $builtinmodule = function (name) {
         proto.$drive_distance_nb = function(distance, radius) {
             return this.inner.driveDistanceNB(distance, radius);
         };
+
+        proto.$_move_generic = function(
+                angle1, angle2, angle3,
+                relative1, relative2, relative3,
+                timeout1, timeout2, timeout3,
+                state_on_timeout1, state_on_timeout2, state_on_timeout3,
+                mask, wait_mask) {
+            return this.inner.move(
+                angle1, angle2, angle3,
+                relative1, relative2, relative3,
+                timeout1, timeout2, timeout3,
+                state_on_timeout1, state_on_timeout2, state_on_timeout3,
+                mask, wait_mask);
+        };
         
         proto.$move = function(angle1, angle2, angle3) {
             return this.inner.move(angle1, angle2, angle3);
