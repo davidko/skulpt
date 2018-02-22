@@ -166,3 +166,6 @@ class Linkbot(_linkbot._Linkbot):
         self.led = Led(self)
         self.motors = Motors(self)
 
+    def set_joint_states(self, dir1, dir2, dir3, mask=0x07):
+        return self._set_joint_states(dir1, dir2, dir3, mask)
+
