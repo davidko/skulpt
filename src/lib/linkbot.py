@@ -4,8 +4,8 @@ class Accelerometer:
     def __init__(self, linkbot):
         self.__linkbot = linkbot
 
-    def set_event_handler(callback=None, granularity=0x05):
-        raise NotImplementedError('set_event_handler not implemented.')
+    def set_event_handler(callback=None, granularity=0.05):
+        return self.__linkbot.set_accelerometer_callback(callback)
 
     def values():
         return self.__linkbot.get_accelerometer()
@@ -24,10 +24,10 @@ class Battery:
         self.__linkbot = linkbot
 
     def percentage(self):
-        raise NotImplementedError("Method not implemented.")
+        return self.__linkbot.get_battery_percentage()
 
     def voltage(self):
-        raise NotImplementedError("Method not implemented.")
+        return self.__linkbot.get_battery_voltage()
 
 class Buttons:
     def __init__(self, linkbot):
@@ -60,7 +60,7 @@ class Led:
         self.__linkbot = linkbot
 
     def color():
-        raise NotImplementedError("Method not implemented.")
+        return self.__linkbot.get_led_color()
 
     def set_color(self, r, g, b):
         return self.__linkbot.set_led_color(r, g, b)
@@ -153,6 +153,7 @@ class Motors:
             wait_mask = 0x07
         return self.__linkbot._move_generic( angles[0], angles[1], angles[2],
                                              relative, relative, relative,
+                                             None, None, None,
                                              timeouts[0], timeouts[1], timeouts[2],
                                              states_on_timeout[0], states_on_timeout[1], states_on_timeout[2],
                                              mask, wait_mask)
@@ -179,4 +180,23 @@ class Linkbot(_linkbot._Linkbot):
 
     def set_joint_states(self, dir1, dir2, dir3, mask=0x07):
         return self._set_joint_states(dir1, dir2, dir3, mask)
+
+    def move_smooth(self, angle1, angle2, angle3, mask=0x07):
+        return self._move_smooth(angle1, angle2, angle3, mask)
+
+    def move_smooth_nb(self, angle1, angle2, angle3, mask=0x07):
+        return self._move_smooth_nb(angle1, angle2, angle3, mask)
+
+    def move_to_smooth(self, angle1, angle2, angle3, mask=0x07):
+        return self._move_to_smooth(angle1, angle2, angle3, mask)
+
+    def move_to_smooth_nb(self, angle1, angle2, angle3, mask=0x07):
+        return self._move_to_smooth_nb(angle1, angle2, angle3, mask)
+
+    def set_joint_accels(self, a1, a2, a3, mask=0x07):
+        return self._set_joint_accels(a1, a2, a3, mask)
+
+    def set_joint_decels(self, a1, a2, a3, mask=0x07):
+        return self._set_joint_decels(a1, a2, a3, mask)
+
 

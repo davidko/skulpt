@@ -13,8 +13,20 @@ var $builtinmodule = function (name) {
             return this.inner.getAccelerometer();
         };
 
+        proto.$get_battery_voltage = function() {
+            return this.inner.getBatteryVoltage();
+        };
+
+        proto.$get_battery_percentage = function() {
+            return this.inner.getBatteryPercentage();
+        };
+
         proto.$get_buttons = function() {
             return this.inner.getButtons();
+        };
+
+        proto.$get_led_color = function() {
+            return this.inner.getColor();
         };
 
         proto.$get_joint_angle = function(joint) {
@@ -67,6 +79,22 @@ var $builtinmodule = function (name) {
 
         proto.$move_to_nb = function(angle1, angle2, angle3) {
             return this.inner.moveToNB(angle1, angle2, angle3);
+        };
+
+        proto.$_move_smooth = function(angle1, angle2, angle3, mask) {
+            return this.inner.moveSmooth(angle1, angle2, angle3, mask);
+        };
+
+        proto.$_move_smooth_nb = function(angle1, angle2, angle3, mask) {
+            return this.inner.moveSmoothNB(angle1, angle2, angle3, mask);
+        };
+
+        proto.$_move_to_smooth = function(angle1, angle2, angle3, mask) {
+            return this.inner.moveToSmooth(angle1, angle2, angle3, mask);
+        };
+
+        proto.$_move_to_smooth_nb = function(angle1, angle2, angle3, mask) {
+            return this.inner.moveToSmoothNB(angle1, angle2, angle3, mask);
         };
 
         proto.$move_joint = function(joint, angle) {
@@ -129,6 +157,14 @@ var $builtinmodule = function (name) {
 
         proto.$set_joint_speeds = function(speed1, speed2, speed3) {
             return this.inner.setMotorSpeeds(speed1, speed2, speed3);
+        };
+
+        proto.$_set_joint_accels = function(a1, a2, a3, mask) {
+            return this.inner.setMotorAccels(a1, a2, a3, mask);
+        };
+
+        proto.$_set_joint_decels = function(a1, a2, a3, mask) {
+            return this.inner.setMotorDecels(a1, a2, a3, mask);
         };
 
         proto.$_set_joint_states = function(s1, s2, s3, mask) {
