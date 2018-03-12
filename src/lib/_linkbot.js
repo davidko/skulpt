@@ -400,9 +400,20 @@ var $builtinmodule = function (name) {
             self.instance = new __Linkbot();
             Sk.builtin.pyCheckArgs("__init__", arguments, 2, 2);
             serial_id = Sk.ffi.remapToJs(serial_id);
-            var robot_promise = getDaemon().then(function(daemon) {
-                return daemon.getRobot(serial_id);
-            });
+            var robot_promise;
+            if ( serial_id === 'LOCL' ) {
+                var ids = Linkbots.getConnectedRobotIds();
+                if ( ids.length < 1 ) {
+                    robot_promise = Promise.reject('Not enough connected robots in robot manager.');
+                }
+                robot_promise = getDaemon().then(function(daemon) {
+                    return daemon.getRobot(ids[0]);
+                });
+            } else {
+                robot_promise = getDaemon().then(function(daemon) {
+                    return daemon.getRobot(serial_id);
+                });
+            }
             var susp = new Sk.misceval.Suspension();
             susp.resume = function() {
                 if ( susp.data['error'] ) {

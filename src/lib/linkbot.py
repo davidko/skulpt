@@ -168,7 +168,7 @@ class Motors:
         return self.__linkbot.set_motor_powers(powers[0], powers[1], powers[2])
 
 class Linkbot(_linkbot._Linkbot):
-    def __init__(self, serial_id):
+    def __init__(self, serial_id='LOCL'):
         _linkbot._Linkbot.__init__(self, serial_id.upper())  
 
         self.accelerometer = Accelerometer(self)
