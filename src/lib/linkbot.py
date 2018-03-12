@@ -169,7 +169,7 @@ class Motors:
 
 class Linkbot(_linkbot._Linkbot):
     def __init__(self, serial_id):
-        _linkbot._Linkbot.__init__(self, serial_id)  
+        _linkbot._Linkbot.__init__(self, serial_id.upper())  
 
         self.accelerometer = Accelerometer(self)
         self.battery = Battery(self)
