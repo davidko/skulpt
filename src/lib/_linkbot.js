@@ -405,10 +405,11 @@ var $builtinmodule = function (name) {
                 var ids = Linkbots.getConnectedRobotIds();
                 if ( ids.length < 1 ) {
                     robot_promise = Promise.reject('Not enough connected robots in robot manager.');
+                } else {
+                    robot_promise = getDaemon().then(function(daemon) {
+                        return daemon.getRobot(ids[0]);
+                    });
                 }
-                robot_promise = getDaemon().then(function(daemon) {
-                    return daemon.getRobot(ids[0]);
-                });
             } else {
                 robot_promise = getDaemon().then(function(daemon) {
                     return daemon.getRobot(serial_id);
@@ -417,7 +418,7 @@ var $builtinmodule = function (name) {
             var susp = new Sk.misceval.Suspension();
             susp.resume = function() {
                 if ( susp.data['error'] ) {
-                    throw new Sk.builtin.RuntimeError('Could not connect to robot: ' + serial_id);
+                    throw new Sk.builtin.RuntimeError('Could not connect to robot: ' + susp.data['error']);
                 } else {
                     return Sk.builtin.none.none$;
                 }
