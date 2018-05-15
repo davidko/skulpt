@@ -1,5 +1,14 @@
 import _linkbot
 
+def from_camel(camel_str):
+    out = ''
+    for letter in camel_str:
+        if letter.isupper():
+            out += '_' + letter.lower()
+        else:
+            out += letter
+    return out
+
 class Accelerometer:
     def __init__(self, linkbot):
         self.__linkbot = linkbot
@@ -210,12 +219,7 @@ class Linkbot(_linkbot._Linkbot):
         # AttributeError.
         origname = name
         # Convert the name to a new PEP8 style name
-        import re
-        if name.endswith('NB'):
-            name = name[:-2] + 'Nb'
-        if name.endswith('CB'):
-            name = name[:-2] + 'Cb'
-        newname = re.sub(r'([A-Z])', lambda x: '_'+x.group(1).lower(), name)
+        newname = from_camel(name)
         if newname == origname:
             raise AttributeError(origname)
         # return self.__dict__[newname]
@@ -223,4 +227,22 @@ class Linkbot(_linkbot._Linkbot):
 
 class CLinkbot(Linkbot):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super(CLinkbot, self).__init__(*args, **kwargs)
+
+    # This method allows us to programatically support both mixedCase and
+    # lowercase_with_underscore method names. If an attribute cannot be found,
+    # it is converted to the equivalent lowercase attribute name and checked
+    # again. If it still cannot be found, AttributeError is raised.
+    def __getattr__(self, name):
+        # Strategy: First, convert the name to a PEP8 style name and see if it
+        # is an attribute. If it is, return that. If not, try to see if the
+        # original name is an attribute and return that. If not, raise
+        # AttributeError.
+        origname = name
+        # Convert the name to a new PEP8 style name
+        newname = from_camel(name)
+        if newname == origname:
+            raise AttributeError(origname)
+        # return self.__dict__[newname]
+        return getattr(self, newname)
+
